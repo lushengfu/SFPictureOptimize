@@ -22,9 +22,7 @@ class ViewController: UIViewController {
         view.addSubview(imgView)
         
         let image = #imageLiteral(resourceName: "avatar_default_big")
-        
-        
-        imgView.image =  clipCircleAvatarImage(image: #imageLiteral(resourceName: "avatar_default_big"), size: image.size)
+        imgView.image =  clipCircleAvatarImage(image: image, size: image.size, backColor: view.backgroundColor)
         
 //        imgView.backgroundColor = UIColor.red
         
@@ -47,16 +45,26 @@ class ViewController: UIViewController {
     }
     
     // 切圆角图片
-    private func clipCircleAvatarImage(image: UIImage, size: CGSize) -> UIImage? {
+    private func clipCircleAvatarImage(image: UIImage, size: CGSize, backColor: UIColor?) -> UIImage? {
         
         let rect = CGRect(origin: CGPoint(), size: size)
+        
         // 获取图片的上下文
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+        
+        // 背景填充
+        backColor?.setFill()
+        UIRectFill(rect)
         
         let path = UIBezierPath(ovalIn: rect)
         path.addClip()
         
         image.draw(at: CGPoint())
+        
+        // 绘制内切圆,即边框
+        UIColor.darkGray.setStroke()
+        path.lineWidth = 3.0
+        path.stroke()
         
         let result = UIGraphicsGetImageFromCurrentImageContext()
         
